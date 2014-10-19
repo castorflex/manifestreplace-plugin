@@ -22,12 +22,6 @@ class ManifestReplacePlugin implements Plugin<Project> {
         }
 
         final def log = project.logger
-        ManifestReplacePluginExtension extension = project.extensions.create("manifestReplace", ManifestReplacePluginExtension)
-        if(extension == null) {
-            log.debug("Nothing to replace in manifest, exiting.")
-            return;
-        }
-
         final def variants
         if (hasApp) {
             variants = project.android.applicationVariants
@@ -38,7 +32,8 @@ class ManifestReplacePlugin implements Plugin<Project> {
         variants.all { BaseVariant variant ->
             variant.outputs.each { BaseVariantOutput output ->
                 output.processManifest.doLast {
-                    if(!extension.hasPlaceholders()){
+                    def placeholders = variant.mergedFlavor.manifestPlaceholders;
+                    if(!placeholders == null || placeholders.isEmpty()){
                         log.debug("Nothing to replace in manifest, exiting.")
                         return;
                     }
@@ -46,7 +41,9 @@ class ManifestReplacePlugin implements Plugin<Project> {
                     File manifestFile = output.processManifest.manifestOutputFile
                     String content = manifestFile.getText()
 
-                    extension.manifestPlaceholders.each { key, value ->
+
+                    placeholders.each { key, value ->
+                        log.debug("replacing $key by $value in variant ${variant.name}")
                         Pattern pattern = Pattern.compile(Pattern.quote("\${$key}"), Pattern.DOTALL);
                         content = pattern.matcher(content).replaceAll(value);
                     }
