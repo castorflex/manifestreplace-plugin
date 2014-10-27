@@ -12,6 +12,7 @@ This plugin replace all instances of your placeholder by your values in your man
 # Usage
 
 Add the plugin to your classpath, and apply it! That's all
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.castorflex.manifestreplace/plugin/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/com.github.castorflex.manifestreplace/plugin)
 
 ```groovy
 dependencies {
